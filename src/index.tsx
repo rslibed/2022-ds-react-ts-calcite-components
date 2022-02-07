@@ -1,17 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.scss";
+import App from "./App";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// Calcite Components
+import "@esri/calcite-components/dist/calcite/calcite.css";
+import "@esri/calcite-components/dist";
+import { applyPolyfills } from "@esri/calcite-components/dist/loader";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import {
+  setAssetPath,
+  defineCustomElements
+} from "@esri/calcite-components/dist/custom-elements";
+
+(async function init() {
+  setAssetPath(window.location.href);
+
+  await applyPolyfills();
+  defineCustomElements(window);
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+})();

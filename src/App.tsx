@@ -1,25 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+
+import Header from "./Components/Header/Header";
+import View from "./Components/View/View";
+
+import WebMap from "@arcgis/core/WebMap";
+import MapView from "@arcgis/core/views/MapView";
+
+import applicationjSON from "../src/config/application.json";
+
+import esriConfig from "@arcgis/core/config";
 
 function App() {
+  const { webmap, title, portalUrl } = applicationjSON;
+  esriConfig.portalUrl = portalUrl;
+
+  const [view, setView] = useState<__esri.MapView | undefined>(undefined);
+
+  useEffect(() => {
+    const map = new WebMap({
+      portalItem: {
+        id: webmap
+      }
+    });
+    const mapView = new MapView({
+      map
+    });
+    setView(mapView);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <calcite-shell>
+      <Header title={title} />
+      <calcite-shell-panel slot="primary-panel">
+        / ** Feature pop up content with calcite components ** /
+      </calcite-shell-panel>
+      <View view={view} />
+    </calcite-shell>
   );
 }
 
