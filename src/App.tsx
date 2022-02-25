@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import "./App.scss";
 
 import Header from "./Components/Header/Header";
 import View from "./Components/View/View";
+import SidePanel from "./Components/SidePanel/SidePanel";
 
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
@@ -10,11 +12,17 @@ import applicationjSON from "../src/config/application.json";
 
 import esriConfig from "@arcgis/core/config";
 
+import "@esri/calcite-components/dist/components/calcite-scrim";
+import "@esri/calcite-components/dist/components/calcite-shell";
+import { CalciteScrim, CalciteShell } from "@esri/calcite-components-react";
+
 function App() {
-  const { webmap, title, portalUrl } = applicationjSON;
+  const { webmap, portalUrl } = applicationjSON;
   esriConfig.portalUrl = portalUrl;
 
-  const [view, setView] = useState<__esri.MapView | undefined>(undefined);
+  const [view, setView] = useState(null);
+  const [mapTitle, setMapTitle] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const map = new WebMap({
@@ -22,20 +30,28 @@ function App() {
         id: webmap
       }
     });
+
     const mapView = new MapView({
       map
     });
+
     setView(mapView);
+
+    mapView.when().then(view => {
+      setMapTitle(view.map.portalItem.title);
+      setLoading(false);
+    });
   }, []);
 
   return (
-    <calcite-shell>
-      <Header title={title} />
-      <calcite-shell-panel slot="primary-panel">
-        / ** Feature pop up content with calcite components ** /
-      </calcite-shell-panel>
-      <View view={view} />
-    </calcite-shell>
+    <>
+      {loading ? <CalciteScrim key="scrim" loading /> : null}
+      <CalciteShell key="shell">
+        <Header title={loading ? "Loading..." : mapTitle} />
+        <SidePanel view={view} />
+        <View view={view} />
+      </CalciteShell>
+    </>
   );
 }
 

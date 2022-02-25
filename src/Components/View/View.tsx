@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "./View.scss";
 
 interface ViewProps {
-  view: __esri.MapView | undefined;
+  view: __esri.MapView;
 }
 
 function View(props: ViewProps) {
