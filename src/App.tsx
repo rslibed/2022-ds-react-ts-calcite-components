@@ -17,7 +17,7 @@ import "@esri/calcite-components/dist/components/calcite-shell";
 import { CalciteScrim, CalciteShell } from "@esri/calcite-components-react";
 
 function App() {
-  const { webmap, portalUrl } = applicationjSON;
+  const { webmap, portalUrl, layerId } = applicationjSON;
   esriConfig.portalUrl = portalUrl;
 
   const [view, setView] = useState(null);
@@ -48,7 +48,7 @@ function App() {
       {loading ? <CalciteScrim key="scrim" loading /> : null}
       <CalciteShell key="shell">
         <Header title={loading ? "Loading..." : mapTitle} />
-        <SidePanel view={view} />
+        <SidePanel view={view} layerId={layerId} />
         <View view={view} />
       </CalciteShell>
     </>
