@@ -209,7 +209,9 @@ function Feature(props: FeatureProps) {
         appearance="solid"
         scale="m"
       ></CalciteAction>
-      <div ref={featureWidgetRef} />
+      <div className="feature-content-container">
+        <div ref={featureWidgetRef} />
+      </div>
     </CalcitePanel>
   ) : (
     <CalciteLoader label="Loading..." active />
