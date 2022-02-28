@@ -9,6 +9,7 @@
     "npm": "^8.4.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "typescript-tslint-plugin": "^1.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
