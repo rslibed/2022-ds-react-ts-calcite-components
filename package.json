@@ -13,8 +13,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "vite",
-    "build": "vite build"
+    "start": "npm run copy && vite",
+    "build": "npm run copy && vite build",
+    "copy": "ncp ./node_modules/@esri/calcite-components/dist/calcite/assets ./public/assets"
   },
   "eslintConfig": {
     "extends": [
