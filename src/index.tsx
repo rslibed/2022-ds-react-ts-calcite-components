@@ -1,12 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { setAssetPath } from "@esri/calcite-components/dist/components";
 import App from "./App";
 
-import "./index.scss";
-import "@esri/calcite-components/dist/calcite/calcite.css";
-
-setAssetPath(window.location.href);
+// STEP 1: Import styles and set asset path
+// import "./index.scss";
+// import { setAssetPath } from "@esri/calcite-components/dist/components";
+// setAssetPath(window.location.href);
 
 ReactDOM.render(
   <React.StrictMode>

@@ -19,32 +19,34 @@ import { CalciteScrim, CalciteShell } from "@esri/calcite-components-react";
 import InfoModal from "./Components/InfoModal/InfoModal";
 
 function App() {
-  const { webmap, portalUrl, layerId } = applicationJSON;
-  esriConfig.portalUrl = portalUrl;
+  // STEP 2: Set up portal and view state
+  // const { webmap, portalUrl, layerId } = applicationJSON;
+  // esriConfig.portalUrl = portalUrl;
 
-  const [view, setView] = useState(null);
-  const [mapTitle, setMapTitle] = useState(null);
+  // const [view, setView] = useState(null);
+  // const [mapTitle, setMapTitle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openInfoModal, setOpenInfoModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    const map = new WebMap({
-      portalItem: {
-        id: webmap
-      }
-    });
+  // STEP 3: On App component load, create webmap, map view, map title, and store in state
+  // useEffect(() => {
+  //   const map = new WebMap({
+  //     portalItem: {
+  //       id: webmap
+  //     }
+  //   });
 
-    const mapView = new MapView({
-      map
-    });
+  //   const mapView = new MapView({
+  //     map
+  //   });
 
-    setView(mapView);
+  //   setView(mapView);
 
-    mapView.when().then((view) => {
-      setMapTitle(view.map.portalItem.title);
-      setLoading(false);
-    });
-  }, []);
+  //   mapView.when().then((view) => {
+  //     setMapTitle(view.map.portalItem.title);
+  //     setLoading(false);
+  //   });
+  // }, []);
 
   function handleOpenInfoModal(): void {
     setOpenInfoModal(!openInfoModal);
@@ -54,11 +56,12 @@ function App() {
     <>
       {loading ? <CalciteScrim key="scrim" loading /> : null}
       {/* <InfoModal handleOpenInfoModal={() => handleOpenInfoModal()} active={openInfoModal} /> */}
-      <CalciteShell key="shell">
+      {/* STEP 4: Calcite Shell, app container, slots for header, side panel, and map view */}
+      {/* <CalciteShell key="shell">
         <Header title={loading ? "Loading..." : mapTitle} />
         <SidePanel view={view} layerId={layerId} handleOpenInfoModal={handleOpenInfoModal}/>
         <View view={view} />
-      </CalciteShell>
+      </CalciteShell> */}
     </>
   );
 }

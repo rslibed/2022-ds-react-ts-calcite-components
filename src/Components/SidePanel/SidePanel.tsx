@@ -13,6 +13,7 @@ interface SidePanelProps {
 
 function SidePanel(props: SidePanelProps) {
   return (
+    // STEP 5: Calcite Shell Panel
     <CalciteShellPanel slot="primary-panel" position="start">
       <Feature view={props.view} layerId={props.layerId} handleOpenInfoModal={props.handleOpenInfoModal}/>
     </CalciteShellPanel>

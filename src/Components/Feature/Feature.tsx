@@ -140,7 +140,7 @@ function Feature({ layerId, view, handleOpenInfoModal }: FeatureProps) {
         featureWidget.graphic = currentGraphic;
       }
     }
-  }, [featureWidgetRef?.current, currentGraphic]);
+  }, [currentGraphic]);
 
   const updateFeature = (type: string) => {
     const lastIndex = graphics.length - 1;
