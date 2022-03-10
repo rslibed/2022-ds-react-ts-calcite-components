@@ -8,12 +8,13 @@ import Feature from "../Feature/Feature";
 interface SidePanelProps {
   view: __esri.MapView;
   layerId: string;
+  handleOpenInfoModal: Function;
 }
 
 function SidePanel(props: SidePanelProps) {
   return (
     <CalciteShellPanel slot="primary-panel" position="start">
-      <Feature view={props.view} layerId={props.layerId} />
+      <Feature view={props.view} layerId={props.layerId} handleOpenInfoModal={props.handleOpenInfoModal}/>
     </CalciteShellPanel>
   );
 }

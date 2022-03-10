@@ -1,27 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import FeatureWidget from "@arcgis/core/widgets/Feature";
 import { whenFalseOnce, whenFalse } from "@arcgis/core/core/watchUtils";
 import Handles from "@arcgis/core/core/Handles";
+import Expand from "@arcgis/core/widgets/Expand";
 
 import "@esri/calcite-components/dist/components/calcite-panel";
 import "@esri/calcite-components/dist/components/calcite-action";
 import "@esri/calcite-components/dist/components/calcite-loader";
+import { CalcitePanel, CalciteAction, CalciteLoader } from "@esri/calcite-components-react";
 
-import {
-  CalcitePanel,
-  CalciteAction,
-  CalciteLoader
-} from "@esri/calcite-components-react";
+import ControlPanel from "../ControlPanel/ControlPanel";
+
+import "./Feature.scss";
 
 interface FeatureProps {
   view: __esri.MapView;
   layerId: string;
+  handleOpenInfoModal: Function;
 }
 
-function Feature(props: FeatureProps) {
-  const { view } = props;
+function Feature({ layerId, view, handleOpenInfoModal }: FeatureProps) {
   const handles = new Handles();
-  const featureWidgetRef = useRef(null);
+  const featureWidgetRef = useRef<HTMLDivElement>(null);
+  const navWidgetRef = useRef<HTMLDivElement>(null);
 
   const [fLayer, setFLayer] = useState<__esri.FeatureLayer>(null);
   const [fLayerView, setFLayerView] = useState<__esri.FeatureLayerView>(null);
@@ -30,27 +31,26 @@ function Feature(props: FeatureProps) {
   const [currentGraphic, setCurrentGraphic] = useState<__esri.Graphic>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(null);
   const [featureWidget, setFeatureWidget] = useState<__esri.Feature>(null);
-  const [highlightedFeature, setHighlightedFeature] =
-    useState<__esri.Handle>(null);
+  const [highlightedFeature, setHighlightedFeature] = useState<__esri.Handle>(null);
   const [viewClickListener, setViewClickListener] = useState(null);
 
-  const handleHitTest = async e => {
+  const handleHitTest = async (e) => {
     if (!graphics) {
       return;
     }
 
     const hitTestRes = await view.hitTest(e);
     const result = hitTestRes?.results?.[0];
-    const graphic = result.graphic;
-    const fLayer = graphic.layer as __esri.FeatureLayer;
-    const oidField = fLayer.objectIdField;
-    const oid = graphic.attributes[oidField];
-    const graphicToUse = graphics.filter(
-      graphic => graphic.attributes[oidField] === oid
-    )[0];
-    const index = graphics.indexOf(graphicToUse);
-    setCurrentIndex(index);
-    setCurrentGraphic(graphicToUse);
+    const graphic = result?.graphic;
+    if (graphic) {
+      const fLayer = graphic.layer as __esri.FeatureLayer;
+      const oidField = fLayer.objectIdField;
+      const oid = graphic.attributes[oidField];
+      const graphicToUse = graphics.filter((graphic) => graphic.attributes[oidField] === oid)[0];
+      const index = graphics.indexOf(graphicToUse);
+      setCurrentIndex(index);
+      setCurrentGraphic(graphicToUse);
+    }
   };
 
   // SET FEATURE LAYER
@@ -62,9 +62,7 @@ function Feature(props: FeatureProps) {
     view?.when(async () => {
       const webmap = view?.map as __esri.WebMap;
       const loadedMap = await webmap?.loadAll();
-      const fLayer = loadedMap.allLayers.find(
-        layer => layer.id === props.layerId
-      ) as __esri.FeatureLayer;
+      const fLayer = loadedMap.allLayers.find((layer) => layer.id === layerId) as __esri.FeatureLayer;
       const loadedFlayer = await fLayer.load();
       fLayer.popupEnabled = false;
       setFLayer(loadedFlayer);
@@ -96,7 +94,6 @@ function Feature(props: FeatureProps) {
         geometry: view.extent,
         returnGeometry: true
       });
-
       setGraphics(queryRes.features);
     };
 
@@ -122,7 +119,7 @@ function Feature(props: FeatureProps) {
       if (viewClickListener) {
         viewClickListener.remove();
       }
-      const updatedViewClickListener = view.on("click", e => handleHitTest(e));
+      const updatedViewClickListener = view.on("click", (e) => handleHitTest(e));
       setViewClickListener(updatedViewClickListener);
     }
   }, [graphics]);
@@ -178,9 +175,39 @@ function Feature(props: FeatureProps) {
       if (highlightedFeature) {
         highlightedFeature.remove();
       }
+      const { objectIdField } = fLayer;
+      const { attributes } = currentGraphic;
+      fLayerView.featureEffect = {
+        ...fLayerView.featureEffect,
+        filter: {
+          ...fLayerView.featureEffect?.filter,
+          where: `(${objectIdField} = ${attributes[objectIdField]} OR ${objectIdField} = '${attributes[objectIdField]}')`
+        },
+        includedEffect: "",
+        excludedEffect: "grayscale(100%) opacity(50%)"
+      } as __esri.FeatureEffect;
       setHighlightedFeature(fLayerView.highlight(currentGraphic));
     }
   }, [fLayerView, currentGraphic]);
+
+  // Add Control Panel
+  // useEffect(() => {
+  //   if (view && graphics?.length > 0 && currentGraphic) {
+  //     let expandWidget = view.ui.find("control-panel") as __esri.Expand;
+  //     if (!expandWidget) {
+  //       expandWidget = new Expand({
+  //         content: navWidgetRef.current,
+  //         id: "control-panel",
+  //         expanded: true,
+  //         mode: "floating"
+  //       });
+  //       view.ui.add(expandWidget, {
+  //         position: "top-right",
+  //         index: 0
+  //       });
+  //     }
+  //   }
+  // }, [view, graphics?.length, currentGraphic]);
 
   return graphics?.length > 0 && currentGraphic ? (
     <CalcitePanel className="feature-panel">
@@ -209,6 +236,17 @@ function Feature(props: FeatureProps) {
         appearance="solid"
         scale="m"
       ></CalciteAction>
+      {/* <div ref={navWidgetRef}>
+        <ControlPanel
+          handleInformation={() => handleOpenInfoModal()}
+          handlePrevious={() => {
+            updateFeature("previous");
+          }}
+          handleNext={() => {
+            updateFeature("next");
+          }}
+        />
+      </div> */}
       <div className="feature-content-container">
         <div ref={featureWidgetRef} />
       </div>
