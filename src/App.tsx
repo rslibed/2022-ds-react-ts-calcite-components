@@ -53,7 +53,7 @@ function App() {
   return (
     <>
       {loading ? <CalciteScrim key="scrim" loading /> : null}
-      {/* <InfoModal handleOpenInfoModal={() => handleOpenInfoModal()} active={openInfoModal} /> */}
+      <InfoModal handleOpenInfoModal={() => handleOpenInfoModal()} active={openInfoModal} />
       <CalciteShell key="shell">
         <Header title={loading ? "Loading..." : mapTitle} />
         <SidePanel view={view} layerId={layerId} handleOpenInfoModal={handleOpenInfoModal}/>

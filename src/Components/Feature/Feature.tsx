@@ -191,30 +191,30 @@ function Feature({ layerId, view, handleOpenInfoModal }: FeatureProps) {
   }, [fLayerView, currentGraphic]);
 
   // Add Control Panel
-  // useEffect(() => {
-  //   if (view && graphics?.length > 0 && currentGraphic) {
-  //     let expandWidget = view.ui.find("control-panel") as __esri.Expand;
-  //     if (!expandWidget) {
-  //       expandWidget = new Expand({
-  //         content: navWidgetRef.current,
-  //         id: "control-panel",
-  //         expanded: true,
-  //         mode: "floating"
-  //       });
-  //       view.ui.add(expandWidget, {
-  //         position: "top-right",
-  //         index: 0
-  //       });
-  //     }
-  //   }
-  // }, [view, graphics?.length, currentGraphic]);
+  useEffect(() => {
+    if (view && graphics?.length > 0 && currentGraphic) {
+      let expandWidget = view.ui.find("control-panel") as __esri.Expand;
+      if (!expandWidget) {
+        expandWidget = new Expand({
+          content: navWidgetRef.current,
+          id: "control-panel",
+          expanded: true,
+          mode: "floating"
+        });
+        view.ui.add(expandWidget, {
+          position: "top-right",
+          index: 0
+        });
+      }
+    }
+  }, [view, graphics?.length, currentGraphic]);
 
   return graphics?.length > 0 && currentGraphic ? (
     <CalcitePanel className="feature-panel">
       <div className="heading" slot="header-content">
         <h2>Feature: {`${currentIndex + 1} / ${graphics?.length}`}</h2>
       </div>
-      <CalciteAction
+      {/* <CalciteAction
         onClick={() => {
           updateFeature("previous");
         }}
@@ -235,8 +235,8 @@ function Feature({ layerId, view, handleOpenInfoModal }: FeatureProps) {
         icon="chevron-right"
         appearance="solid"
         scale="m"
-      ></CalciteAction>
-      {/* <div ref={navWidgetRef}>
+      ></CalciteAction> */}
+      <div ref={navWidgetRef}>
         <ControlPanel
           handleInformation={() => handleOpenInfoModal()}
           handlePrevious={() => {
@@ -246,7 +246,7 @@ function Feature({ layerId, view, handleOpenInfoModal }: FeatureProps) {
             updateFeature("next");
           }}
         />
-      </div> */}
+      </div>
       <div className="feature-content-container">
         <div ref={featureWidgetRef} />
       </div>
